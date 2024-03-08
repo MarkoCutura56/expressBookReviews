@@ -9,7 +9,7 @@ app.use(express.json());
 app.get("/",(req,res,next)=>
 {
     res.send("Welcome to Marko server");
-   next();
+   
 })
 
 
