@@ -80,8 +80,8 @@ regd_users.put("/auth/review", (req, res) => {
 
   if (isISBNNumberValid = true) {
     console.log(JSON.stringify(users));
-    console.log("userlength is " + toString(Object.keys(users).length));
-    for (let i = 0; i < users.length - 1; i++) {
+    console.log("userlength is " + users.length);
+    for (let i = 0; i <= users.length - 1; i++) {
       if (users[i].username == name) {
         if (!(name in books[isbnNumber].reviews)) {
           books[isbnNumber].reviews[name] = newReview;
@@ -91,8 +91,11 @@ regd_users.put("/auth/review", (req, res) => {
         }
       }
     }
+    console.log("done");
+    return res.status(200).send("Review succesfully added");
   }
-  else {
+  else 
+  {
     console.log("ISBN num not recognized");
     return res.status(300).json({ message: "ISBN num not recognized" });
   }
