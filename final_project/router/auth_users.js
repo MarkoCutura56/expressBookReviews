@@ -79,8 +79,6 @@ regd_users.put("/auth/review", (req, res) => {
   }
 
   if (isISBNNumberValid = true) {
-    console.log(JSON.stringify(users));
-    console.log("userlength is " + users.length);
     for (let i = 0; i <= users.length - 1; i++) {
       if (users[i].username == name) {
         if (!(name in books[isbnNumber].reviews)) {
@@ -91,12 +89,44 @@ regd_users.put("/auth/review", (req, res) => {
         }
       }
     }
-    console.log("done");
     return res.status(200).send("Review succesfully added");
   }
   else 
   {
-    console.log("ISBN num not recognized");
+    return res.status(300).json({ message: "ISBN num not recognized" });
+  }
+
+});
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  let name = req.session.authorization.username;
+  let isbnNumber = req.params.isbn;
+
+  for (const [key, value] of Object.entries(books)) {
+    if (isbnNumber == key) {
+      isISBNNumberValid = true;
+      break;
+    }
+    else {
+      isISBNNumberValid=false;
+    }
+  }
+
+  if (isISBNNumberValid = true) {
+    for (let i = 0; i <= users.length - 1; i++) {
+      if (users[i].username == name) {
+        if (name in books[isbnNumber].reviews) {
+          delete books[isbnNumber]["reviews"][name];
+        }
+        else {
+          return res.status(200).send("No review to delete for the requested user");
+        }
+      }
+    }
+    return res.status(200).send("Review succesfully deleted");
+  }
+  else 
+  {
     return res.status(300).json({ message: "ISBN num not recognized" });
   }
 
