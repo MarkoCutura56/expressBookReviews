@@ -10,9 +10,9 @@ public_users.get('/', function (req, res) {
   
   bookList = '';
   for (const [key, value] of Object.entries(books)) {
-    bookList = bookList + value.title + "<br/>";
+    bookList = bookList + value.title;
   }
-  return res.send(bookList);
+  return res.send(JSON.stringify(books));
 
 });
 
@@ -24,7 +24,7 @@ public_users.get('/isbn/:isbn', function (req, res) {
   {
     if(key==req.params.isbn)
     {
-      return res.send(JSON.stringify(books[key]["title"]));
+      return res.send(JSON.stringify(books[key]));
     }
   }
   return res.status(300).json({message: "Book unavailable by ISBN number"});
@@ -38,14 +38,18 @@ public_users.get('/author/:author', function (req, res) {
   let allAuthors = [];
   let bookList = "";
   let i = 0;
+  let modedBook;
   for (const [key, value] of Object.entries(books)) {
     if (value.author == req.params.author) {
-      allAuthors[i] = JSON.stringify(books[key]["title"]);
+      modedBook=Object.assign({},books[key]);
+      modedBook["isbn"]=key;
+      delete modedBook.author;
+      allAuthors[i] = JSON.stringify(modedBook);
       i++;
     }
   }
   if (i > 0) {
-    allAuthors.forEach((currentVal) => bookList = bookList + currentVal + "<br/>");
+    allAuthors.forEach((currentVal) => bookList = bookList + currentVal);
     return res.send(bookList);
   }
   else {
@@ -59,15 +63,19 @@ public_users.get('/author/:author', function (req, res) {
 public_users.get('/title/:title', function (req, res) {
     let allTitles = [];
     let bookList = "";
+    let modedBook;
     let i = 0;
     for (const [key, value] of Object.entries(books)) {
       if (value.title == req.params.title) {
-        allTitles[i] = JSON.stringify(books[key]["title"]);
+        modedBook=Object.assign({},books[key]);
+        modedBook["isbn"]=key;
+        delete modedBook.title;
+        allTitles[i] = JSON.stringify(modedBook);
         i++;
       }
     }
     if (i > 0) {
-      allTitles.forEach((currentVal) => bookList = bookList + currentVal + "<br/>");
+      allTitles.forEach((currentVal) => bookList = bookList + currentVal);
       return res.send(bookList);
     }
     else {

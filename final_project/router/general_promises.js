@@ -12,12 +12,12 @@ public_users.get('/', function (req, res) {
 
     let bookList = '';
     for (const [key, value] of Object.entries(books)) {
-      bookList = bookList + value.title + "<br/>";
+      bookList = bookList + value.title;
     }
-    resolve(bookList);
+    resolve(books);
   });
 
-  myPromise.then((successMessage) => { return res.send(successMessage) });
+  myPromise.then((successMessage) => { return res.send(JSON.stringify(successMessage)) });
 });
 
 
@@ -28,7 +28,7 @@ public_users.get('/isbn/:isbn', function (req, res) {
     isbnNumber = req.params.isbn;
     if (isbnNumber in books) {
 
-      resolve(books[isbnNumber].title);
+      resolve(books[isbnNumber]);
     }
     else {
       reject("Book unavailable by ISBN number");
@@ -51,14 +51,18 @@ public_users.get('/author/:author', function (req, res) {
     let allAuthors = [];
     let bookList = "";
     let i = 0;
+    let modedBook;
     for (const [key, value] of Object.entries(books)) {
       if (value.author == req.params.author) {
-        allAuthors[i] = JSON.stringify(books[key]["title"]);
+        modedBook=Object.assign({},books[key]);
+        modedBook["isbn"]=key;
+        delete modedBook.author;
+        allAuthors[i] = JSON.stringify(modedBook);
         i++;
       }
     }
     if (i > 0) {
-      allAuthors.forEach((currentVal) => bookList = bookList + currentVal + "<br/>");
+      allAuthors.forEach((currentVal) => bookList = bookList + currentVal);
       resolve(bookList);
     }
     else {
@@ -80,14 +84,18 @@ public_users.get('/title/:title', function (req, res) {
     let allTitles = [];
     let bookList = "";
     let i = 0;
+    let modedBook;
     for (const [key, value] of Object.entries(books)) {
       if (value.title == req.params.title) {
-        allTitles[i] = JSON.stringify(books[key]["title"]);
+        modedBook=Object.assign({},books[key]);
+        modedBook["isbn"]=key;
+        delete modedBook.title;
+        allTitles[i] = JSON.stringify(modedBook);
         i++;
       }
     }
     if (i > 0) {
-      allTitles.forEach((currentVal) => bookList = bookList + currentVal + "<br/>");
+      allTitles.forEach((currentVal) => bookList = bookList + currentVal);
       resolve(bookList);
     }
     else {
@@ -97,7 +105,7 @@ public_users.get('/title/:title', function (req, res) {
 
   myPromise.then(
     (successMessage) => { return res.send(successMessage); },
-    (failedMessage) => { return res.status(300).json({ message: "From Callback" + failedMessage }) });
+    (failedMessage) => { return res.status(300).json({ message: failedMessage }) });
 
   return;
 

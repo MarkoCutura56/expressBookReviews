@@ -89,7 +89,7 @@ regd_users.put("/auth/review", (req, res) => {
         }
       }
     }
-    return res.status(200).send("Review succesfully added");
+    return res.status(200).send("The review for the book with ISBN "+isbnNumber+" has been added/updated");
   }
   else 
   {
@@ -123,7 +123,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
         }
       }
     }
-    return res.status(200).send("Review succesfully deleted");
+    return res.status(200).send("Reviews for the ISBN "+isbnNumber+" posted by the user test deleted");
   }
   else 
   {
